@@ -1,7 +1,7 @@
 const std = @import("std");
 
 pub fn main() !void {
-    var passkey: [3]u8 = [0, 4, 2];
+    const passkey = [_]u8{0, 4, 2};
     const size: usize = passkey.len;
     var guess: [size]u8 = undefined;
     var guess_index: usize = undefined;
@@ -21,7 +21,7 @@ pub fn main() !void {
     std.debug.print("    -  [7][8][0] - One number is wrongly placed.\n");
     std.debug.print("\nYou have {} attempts to guess the passkey.\n", .{MAX_ATTEMPTS});
 
-    for (attempt = 1, attempt <= MAX_ATTEMPT; attempt += 1) : (attempt, guess._) {
+    for (attempt) |guess| {
         std.debug.print("\nEnter your guess ({:d} digits between 0 and 9, separated by spaces): ", .{size});
         _, guess[0..size] = try std.fmt.scan(u8, size, "_ _ _");
 
@@ -71,21 +71,22 @@ pub fn main() !void {
 fn parse_input(input_str: []const u8) ![]u8 {
     var input_arr = [_]u8{0, 0, 0};
     var input_items = std.string.split(input_str, " ");
+
     if (input_items.len != 3) {
-        return error."Invalid input: must contain 3 digits separated by spaces.";
+        return error.InvalidInput;
     }
     for (i, input_item: std.mem.span(u8, input_items)) |input_item| {
         var digit: u8 = 0;
         if (input_item[0] < '0' or input_item[0] > '9') {
-            return error."Invalid input: the first digit must be a number between 0 and 9.";
+            return error.InvalidInput;
         }
         digit += (input_item[0] - '0') * 100;
         if (input_item[1] < '0' or input_item[1] > '9') {
-            return error."Invalid input: the second digit must be a number between 0 and 9.";
+            return error.InvalidInput;
         }
         digit += (input_item[1] - '0') * 10;
         if (input_item[2] < '0' or input_item[2] > '9') {
-            return error."Invalid input: the third digit must be a number between 0 and 9.";
+            return error.InvalidInput;
         }
         digit += input_item[2] - '0';
         input_arr[i] = digit;
