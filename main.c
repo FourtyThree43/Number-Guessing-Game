@@ -26,7 +26,8 @@ int main(void)
 		generate_numbers(gen_number, passkey_len);
 		generate_numbers_hints(passkey, gen_number, passkey_len);
 	}
-
+	// Save the cursor position
+    //printf("\033[s");
 	for (attempts = 1; attempts <= max_attempts; attempts++)
 	{
 		guessed_number = get_user_guess(passkey_len);
@@ -54,6 +55,8 @@ int main(void)
 			printf("The passkey was: -> [%d][%d][%d][%d] <-\n", passkey[0], passkey[1], passkey[2], passkey[3]);
 			break;
 		}
+		// Restore the cursor position and clear any leftover characters
+		// printf("\033[u\033[K");
 	}
 	printf("Thank you for playing the numeric lock cracking game!.\n");
 	return (0);
